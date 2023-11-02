@@ -7,24 +7,19 @@ Contstrustors and destructor
 // default constructor
 S21Matrix::S21Matrix(): rows_(3), cols_(3), matrix_(nullptr) {
     AllocateMatrix();
-    count++;
 }
 
 // constructor with parameters
 S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols), matrix_(nullptr) {
     AllocateMatrix();
-    count++;
 }
 
 // copy constructor
 S21Matrix::S21Matrix(const S21Matrix& other) {
-    // std::cout << "HERE" << std::endl;
-    // if (matrix_) delete[] matrix_;
     rows_ = other.rows_;
     cols_ = other.cols_;
     matrix_ = new double[rows_ * cols_];
-    std::memcpy(matrix_, other.matrix_, sizeof(double) * rows_ * cols_);
-    count++;    
+    std::memcpy(matrix_, other.matrix_, sizeof(double) * rows_ * cols_);   
 }
 
 // move constructor
@@ -37,13 +32,11 @@ S21Matrix::S21Matrix(S21Matrix&& other) {
     matrix_ = tmp_;
     rows_ = rows;
     cols_ = cols;
-    count++;
 }
 
 //destructor
 S21Matrix::~S21Matrix() {
     RemoveMatrix();
-    count--;
 }
 
 //===============================================================================================
@@ -92,46 +85,42 @@ Task functions
 */
 bool S21Matrix::EqMatrix(const S21Matrix& other) const {
     if (!CheckSize(other) || !other.matrix_) { return false; }
-
     bool answer = true;
     for (int i = 0; i < rows_ && answer; i++) {
         for (int j = 0; j < cols_ && answer; j++) {
-            if (fabs(matrix_[i * cols_ + j] - other.matrix_[i * cols_ + j]) > EPS) answer = false;
+            if (fabs(matrix_[i * cols_ + j] - other.matrix_[i * cols_ + j]) > 1e-7) answer = false;
         }
     }
     return answer;
 }
 
-S21Matrix& S21Matrix::MulNumber(const double num) {
+void S21Matrix::MulNumber(const double num) {
     for (int i = 0; i < rows_; i++) {
         for (int j = 0; j <cols_; j++) {
             matrix_[i * cols_ + j] *= num;
         }
     }
-    return *this;
 }
 
-S21Matrix& S21Matrix::SumMatrix(const S21Matrix& other) {
+void S21Matrix::SumMatrix(const S21Matrix& other) {
     if (!CheckSize(other) && other.matrix_) { std::runtime_error("Incorrect matrix in SumMatrix"); }
     for (int i = 0; i < rows_; i++) {
         for (int j = 0; j < cols_; j++) {
             matrix_[i * cols_ + j] += other.matrix_[i * cols_ + j];
         }
     }
-    return *this;
 }
 
-S21Matrix& S21Matrix::SubMatrix(const S21Matrix& other) {
+void S21Matrix::SubMatrix(const S21Matrix& other) {
     if (!CheckSize(other) && other.matrix_) { std::runtime_error("Incorrect matrix in SubMatrix"); }
     for (int i = 0; i < rows_; i++) {
         for (int j = 0; j < cols_; j++) {
             matrix_[i * cols_ + j] -= other.matrix_[i * cols_ + j];
         }
     }
-    return *this;
 }
 
-S21Matrix& S21Matrix::MulMatrix(const S21Matrix& other) {
+void S21Matrix::MulMatrix(const S21Matrix& other) {
     if (cols_ != other.rows_) {
         throw std::runtime_error("Incorrect Matrix in MulMatrix");
     }
@@ -147,23 +136,19 @@ S21Matrix& S21Matrix::MulMatrix(const S21Matrix& other) {
     std::swap(tmp.matrix_, matrix_);
     std::swap(tmp.rows_, rows_);
     std::swap(tmp.cols_, cols_);
-    return *this;
 }
 
-S21Matrix S21Matrix::Transpose() {
+S21Matrix S21Matrix::Transpose() const {
     S21Matrix tmp(cols_, rows_);
     for (int i = 0; i < cols_; i++) {
         for (int j = 0; j < rows_; j++) {
             tmp.matrix_[i * rows_ + j] = matrix_[j * cols_ + i]; 
         }
     }
-    std::swap(matrix_, tmp.matrix_);
-    std::swap(cols_, tmp.cols_);
-    std::swap(rows_, tmp.rows_);
-    return *this;
+    return tmp;
 }
 
-double S21Matrix::Determinant() {
+double S21Matrix::Determinant() const {
     if (rows_ != cols_) {throw std::runtime_error("Non quadratic matrix in Determinant"); }
     S21Matrix tmp(*this);
     double determinant = 1;
@@ -192,7 +177,7 @@ double S21Matrix::Determinant() {
     return determinant;
 }
 
-S21Matrix S21Matrix::CalcComplements() {
+S21Matrix S21Matrix::CalcComplements() const {
     if (rows_ != cols_) { std::runtime_error("Non quadratic matrix in CalcComplements"); }
     S21Matrix tmp(rows_, cols_);
     for (int i = 0; i < rows_; i++) {
@@ -203,12 +188,12 @@ S21Matrix S21Matrix::CalcComplements() {
     return tmp;
 }
 
-S21Matrix S21Matrix::InverseMatrix() {
+S21Matrix S21Matrix::InverseMatrix() const {
     if (rows_ != cols_) {throw std::runtime_error("Non quadratic matrix in InverseMatrix"); }
     double det = this->Determinant();
     std::cout << det << std::endl;
-    if (fabs(det) < EPS) {throw std::runtime_error("Zero determinant in InverseMatrix"); }
-    return S21Matrix(this->CalcComplements().Transpose().MulNumber(1 / det));
+    if (fabs(det) < 1e-7) {throw std::runtime_error("Zero determinant in InverseMatrix"); }
+    return S21Matrix(this->CalcComplements().Transpose() * (1 / det));
 }
 
 //=================================================================================================
@@ -224,15 +209,18 @@ double& S21Matrix::operator()(int i, int j) const {
 }
 
 S21Matrix& S21Matrix::operator+=(const S21Matrix& other) {
-    return this->SumMatrix(other);
+    this->SumMatrix(other);
+    return *this;
 }
 
 S21Matrix& S21Matrix::operator-=(const S21Matrix& other) {
-    return this->SubMatrix(other);
+    this->SubMatrix(other);
+    return *this;
 }
 
 S21Matrix& S21Matrix::operator*=(const S21Matrix& other) {
-    return this->MulMatrix(other);
+    this->MulMatrix(other);
+    return *this;
 }
 
 S21Matrix& S21Matrix::operator=(const S21Matrix& other) {
@@ -311,7 +299,7 @@ void S21Matrix::Print() {
     }
 }
 
-double S21Matrix::Addition(int i, int j) {
+double S21Matrix::Addition(int i, int j) const {
     S21Matrix tmp(rows_ - 1, cols_ - 1);
     for (int k = 0; k < rows_ - 1; k++) {
         for (int m = 0; m < cols_ - 1; m++) {
@@ -324,5 +312,6 @@ double S21Matrix::Addition(int i, int j) {
 
 S21Matrix operator*(const double num, const S21Matrix& matrix) {
     S21Matrix tmp(matrix);
-    return tmp.MulNumber(num);
+    tmp.MulNumber(num);
+    return tmp;
 }

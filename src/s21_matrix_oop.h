@@ -1,7 +1,7 @@
 #ifndef S21_MATRIX_OOP_H_
 #define S21_MATRIX_OOP_H_
 
-const double EPS = 1e-7;
+
 
 
 #include <new>
@@ -23,7 +23,7 @@ class S21Matrix {
 
         bool CheckSize(const S21Matrix& other) const;
 
-        double Addition(int i, int j);
+        double Addition(int i, int j) const;
 
     public:
         S21Matrix();
@@ -39,16 +39,16 @@ class S21Matrix {
 
         bool EqMatrix(const S21Matrix& other) const;
 
-        S21Matrix& MulNumber(const double num);
-        S21Matrix& SumMatrix(const S21Matrix& other);
-        S21Matrix& SubMatrix(const S21Matrix& other);
-        S21Matrix& MulMatrix(const S21Matrix& other);
+        void MulNumber(const double num);
+        void SumMatrix(const S21Matrix& other);
+        void SubMatrix(const S21Matrix& other);
+        void MulMatrix(const S21Matrix& other);
 
-        S21Matrix Transpose();
-        S21Matrix InverseMatrix();
-        S21Matrix CalcComplements();
+        S21Matrix Transpose() const;
+        S21Matrix InverseMatrix() const;
+        S21Matrix CalcComplements() const;
         
-        double Determinant(); 
+        double Determinant() const; 
 
         double& operator()(int i, int ) const;
         S21Matrix& operator+=(const S21Matrix& other);
