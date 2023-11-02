@@ -231,31 +231,31 @@ S21Matrix& S21Matrix::operator=(const S21Matrix& other) {
     return *this;
 }
 
-S21Matrix S21Matrix::operator+(const S21Matrix& other) {
+S21Matrix S21Matrix::operator+(const S21Matrix& other) const {
     S21Matrix tmp(*this);
     tmp.SumMatrix(other);
     return tmp;
 }
 
-S21Matrix S21Matrix::operator-(const S21Matrix& other) {
+S21Matrix S21Matrix::operator-(const S21Matrix& other) const {
     S21Matrix tmp(*this);
     tmp.SumMatrix(other);
     return tmp;
 }
 
-S21Matrix S21Matrix::operator*(const S21Matrix& other) {
+S21Matrix S21Matrix::operator*(const S21Matrix& other) const {
     S21Matrix tmp(*this);
     tmp.MulMatrix(other);
     return tmp;
 }
 
-S21Matrix S21Matrix::operator*(const double num) {
+S21Matrix S21Matrix::operator*(const double num) const {
     S21Matrix tmp(*this);
     tmp.MulNumber(num);
     return tmp;
 }
 
-bool S21Matrix::operator==(const S21Matrix& other) {
+bool S21Matrix::operator==(const S21Matrix& other) const {
     return this->EqMatrix(other);
 }
 
@@ -289,7 +289,7 @@ bool S21Matrix::CheckSize(const S21Matrix& other) const {
     return cols_ == other.cols_ && rows_ == other.rows_;
 }
 
-void S21Matrix::Print() {
+void S21Matrix::Print() const {
     std::cout << matrix_ << std::endl;
     for (int i = 0; i < rows_; i++) {
         for (int j = 0; j < cols_; j++) {

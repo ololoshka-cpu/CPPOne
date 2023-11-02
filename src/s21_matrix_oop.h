@@ -1,15 +1,10 @@
 #ifndef S21_MATRIX_OOP_H_
 #define S21_MATRIX_OOP_H_
 
-
-
-
 #include <new>
 #include <iostream>
 #include <cmath>
 #include <cstring>
-
-static int count = 0;
 
 class S21Matrix {
     friend S21Matrix operator*(const double num, const S21Matrix& matrix);
@@ -29,7 +24,7 @@ class S21Matrix {
         S21Matrix();
         S21Matrix(int rows, int cols);
         S21Matrix(const S21Matrix& other);
-        S21Matrix(S21Matrix&& other);
+        S21Matrix(S21Matrix&& other) noexcept;
         ~S21Matrix();
 
         int GetRows() const;
@@ -56,13 +51,13 @@ class S21Matrix {
         S21Matrix& operator*=(const S21Matrix& other);
         S21Matrix& operator*=(const double num);
         S21Matrix& operator=(const S21Matrix& other);
-        S21Matrix operator+(const S21Matrix& other);
-        S21Matrix operator-(const S21Matrix& other);
-        S21Matrix operator*(const S21Matrix& other);
-        S21Matrix operator*(const double num);
+        S21Matrix operator+(const S21Matrix& other) const;
+        S21Matrix operator-(const S21Matrix& other) const;
+        S21Matrix operator*(const S21Matrix& other) const;
+        S21Matrix operator*(const double num) const;
 
-        bool operator==(const S21Matrix& other);
-        void Print();   
+        bool operator==(const S21Matrix& other) const;
+        void Print() const;   
 };
 
 #endif // S21_MATRIX_OOP_H_
