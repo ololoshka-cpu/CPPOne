@@ -1398,14 +1398,14 @@ TEST(Test, test_determinant_matrix_2) {
 TEST(Test, test_determinant_matrix_3) {
   S21Matrix my_matrix(2, 2);
   my_matrix(0, 0) = 1;
-  my_matrix(0, 1) = 1;
+  my_matrix(0, 1) = 0;
 
-  my_matrix(1, 0) = 1;
+  my_matrix(1, 0) = 0;
   my_matrix(1, 1) = 1;
 
   double det = my_matrix.Determinant();
 
-  ASSERT_EQ(det, 0);
+  ASSERT_EQ(det, 1);
 }
 
 TEST(Test, test_determinant_matrix_4) {
